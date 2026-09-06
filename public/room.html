@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posto de Operações · Corpo de Bombeiros Norte</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="text-white flex flex-col h-screen overflow-hidden">
+
+    <div class="atmosphere"></div>
+    <div class="grain"></div>
+
+    <!-- Top Navbar -->
+    <header class="w-full glass-nav flex-shrink-0 z-40 relative">
+        <nav class="max-w-full px-4 sm:px-6 py-2.5 flex justify-between items-center gap-4">
+            
+            <!-- Left: Brand Logo & Room Code -->
+            <div class="flex items-center gap-3 sm:gap-4">
+                <a href="/" class="flex items-center gap-3 group">
+                    <div class="brand-badge" style="width: 38px; height: 38px;">
+                        <img src="/images/bombeiros-logo.png" alt="Emblema Corpo de Bombeiros Norte">
+                    </div>
+                    <div class="hidden sm:block">
+                        <span class="font-anton text-lg tracking-wider">CORPO DE <span class="text-neon-green">BOMBEIROS</span></span>
+                        <div class="text-[10px] text-gray-400 font-semibold tracking-widest -mt-1">SALVAMENTO 35</div>
+                    </div>
+                </a>
+
+                <!-- Room Code Display -->
+                <div class="flex items-center gap-1.5 bg-black/70 border border-[#1c2b23] px-3 py-1 rounded-full text-xs font-mono text-[#7CFF3C] shadow-[0_0_10px_rgba(124,255,60,0.1)]">
+                    <span class="text-gray-400 font-sans text-[11px] font-semibold">POSTO:</span>
+                    <strong id="room-code-tag" class="font-bold text-white tracking-widest text-xs">...</strong>
+                    <button id="copy-code-quick-btn" title="Copiar código do posto" class="hover:text-neon-green text-gray-400 hover:scale-110 ml-1 transition-all">
+                        <i class="fa-regular fa-copy text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Center: Active Stream Status -->
+            <div id="room-status-indicator" class="hidden md:flex items-center gap-2 bg-black/60 border border-[#1c2b23] px-3 py-1 rounded-full text-xs">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7CFF3C] opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-[#7CFF3C]"></span>
+                </span>
+                <span id="room-status-text" class="text-neon-green font-bold tracking-wider text-[11px]">GUARNIÇÃO EM PRONTIDÃO</span>
+            </div>
+            
+            <!-- Right: Actions & Controls -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                
+                <!-- Mobile Members Drawer Toggle Button -->
+                <button id="mobile-sidebar-btn" class="md:hidden glass px-2.5 py-1.5 rounded-xl text-xs font-semibold text-neon-green flex items-center gap-1.5" title="Ver Efetivo">
+                    <i class="fa-solid fa-users text-neon-green"></i>
+                    <span id="mobile-count-text">1</span>
+                </button>
+
+                <!-- Toggle Chat Button -->
+                <button id="toggle-chat-btn" class="glass px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold text-gray-200 hover:text-white transition-all flex items-center gap-1.5 relative" title="Abrir Rádio / Chat">
+                    <i class="fa-solid fa-tower-broadcast text-neon-green text-xs"></i>
+                    <span class="hidden sm:inline text-xs font-semibold">Rádio / Chat</span>
+                    <span id="chat-notification-badge" class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#7CFF3C] rounded-full shadow-[0_0_8px_rgba(124,255,60,0.9)] hidden"></span>
+                </button>
+
+                <!-- Navbar Fullscreen Button -->
+                <button id="nav-fullscreen-btn" class="glass px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold text-gray-200 hover:text-white transition-all flex items-center gap-1.5" title="Tela Cheia (F)">
+                    <i class="fa-solid fa-expand text-neon-green text-sm" id="nav-fs-icon"></i>
+                    <span class="hidden sm:inline text-xs font-semibold" id="nav-fs-text">Tela Cheia</span>
+                </button>
+
+                <!-- Copy Link Button -->
+                <button id="copy-link-btn" class="glass px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold text-gray-200 hover:text-white transition-all flex items-center gap-1.5" title="Copiar link de convocação">
+                    <i class="fa-solid fa-link text-neon-green text-xs"></i>
+                    <span class="hidden sm:inline text-xs font-semibold">Convidar</span>
+                </button>
+
+                <!-- Leave Button -->
+                <button id="leave-room-btn" class="btn-danger px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold text-white transition-all flex items-center gap-1.5" title="Desmobilizar e sair do posto">
+                    <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
+                    <span>Desmobilizar</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Mobile Backdrop for Sidebar Drawer -->
+    <div id="sidebar-backdrop" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
+
+    <!-- Main Workspace: Tactical Split View -->
+    <div class="flex-1 flex flex-row overflow-hidden relative z-10">
+        
+        <!-- LEFT SIDEBAR: Tactical Dispatch & Member List -->
+        <aside id="discord-sidebar" class="fixed md:static inset-y-0 left-0 w-72 sm:w-80 tactical-sidebar z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col flex-shrink-0 h-full shadow-2xl">
+            
+            <!-- Channel Header -->
+            <div class="p-3.5 border-b border-[#1c2b23] flex items-center justify-between">
+                <div class="flex items-center gap-2 text-neon-green font-bold text-sm truncate">
+                    <i class="fa-solid fa-walkie-talkie text-xs"></i>
+                    <span class="text-gray-500 font-light">|</span>
+                    <span id="sidebar-channel-title" class="truncate font-mono text-xs">canal-tatico-35</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-[11px] text-gray-400 font-mono bg-black/50 px-2 py-0.5 rounded-full border border-[#1c2b23]" id="sidebar-user-count">0 combatentes</span>
+                    <button id="close-sidebar-mobile-btn" class="md:hidden text-gray-400 hover:text-white p-1 transition-colors" title="Fechar menu">
+                        <i class="fa-solid fa-xmark text-base"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Members List Section -->
+            <div class="flex-1 overflow-y-auto p-3 space-y-1.5">
+                <div class="flex items-center justify-between text-[11px] font-bold text-gray-400 uppercase tracking-wider px-2 py-1">
+                    <span>Efetivo de Plantão</span>
+                </div>
+
+                <!-- Dynamic Members Container -->
+                <ul id="participants-list" class="space-y-1">
+                    <!-- Preenchido dinamicamente pelo JavaScript -->
+                </ul>
+            </div>
+
+            <!-- Bottom Dock: Self Status & Screen Share Control -->
+            <div class="p-3 bg-[#050a07] border-t border-[#1c2b23] flex flex-col gap-2.5">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2 min-w-0">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-lime-400 to-emerald-700 flex items-center justify-center font-bold text-xs text-black shadow-[0_0_10px_rgba(124,255,60,0.3)] flex-shrink-0" id="self-avatar">
+                            C
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-xs font-bold text-white truncate" id="self-name">Combatente</p>
+                            <p class="text-[10px] text-[#7CFF3C] flex items-center gap-1 font-semibold">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#7CFF3C] animate-pulse"></span> EM OPERAÇÃO
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Action Button -->
+                <button id="toggle-share-screen-btn" class="btn-primary w-full py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-desktop text-sm" id="share-btn-icon"></i>
+                    <span id="share-btn-text">Transmitir Tela</span>
+                </button>
+                <p class="text-[10px] text-center text-gray-500 md:hidden">
+                    <i class="fa-solid fa-mobile-screen mr-1"></i> Transmissão de tela requer PC/notebook.
+                </p>
+            </div>
+        </aside>
+
+        <!-- CENTER STAGE: Video Grid or Waiting Lobby -->
+        <main class="flex-1 flex flex-col items-center justify-center p-3 sm:p-6 overflow-hidden relative">
+            
+            <!-- Waiting Lobby State (Default when no stream is active) -->
+            <div id="lobby-waiting-state" class="lobby-card p-6 sm:p-10 max-w-lg w-full text-center flex flex-col items-center gap-5">
+                <div class="relative flex items-center justify-center">
+                    <div class="brand-badge" style="width: 72px; height: 72px; border-width: 2px;">
+                        <img src="/images/bombeiros-logo.png" alt="Emblema Corpo de Bombeiros Norte">
+                    </div>
+                    <span class="animate-ping absolute inline-flex h-20 w-20 rounded-full bg-[#7CFF3C] opacity-20"></span>
+                </div>
+                
+                <div>
+                    <h2 class="font-anton text-2xl sm:text-3xl text-white tracking-wider mb-2">CANAL EM ESPERA</h2>
+                    <p class="text-xs sm:text-sm text-gray-300 max-w-sm mx-auto font-medium">
+                        Nenhum combatente está transmitindo ocorrência no momento. Inicie sua transmissão de tela para a guarnição acompanhar.
+                    </p>
+                </div>
+
+                <div class="flex flex-col items-center gap-2 w-full max-w-xs">
+                    <button id="lobby-share-btn" class="btn-primary w-full py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2.5">
+                        <i class="fa-solid fa-desktop"></i>
+                        <span>Transmitir Minha Tela</span>
+                    </button>
+                    <p class="text-xs text-gray-500 md:hidden mt-1 font-medium">
+                        <i class="fa-solid fa-mobile-screen mr-1"></i> Transmissão requer um computador.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Active Video Player Stage (Hidden by default) -->
+            <div id="video-container" class="hidden">
+                
+                <!-- Video Top Bar Overlay -->
+                <div class="absolute top-0 inset-x-0 p-3 sm:p-4 bg-gradient-to-b from-black/80 to-transparent flex items-center justify-between z-20 pointer-events-none">
+                    <div class="flex items-center gap-2 bg-black/60 border border-[#1c2b23] px-3 py-1 rounded-full text-xs pointer-events-auto">
+                        <span class="w-2 h-2 rounded-full bg-[#7CFF3C] animate-pulse"></span>
+                        <span id="streamer-name-text" class="text-neon-green font-bold uppercase tracking-wider text-[11px]">SUA TRANSMISSÃO (AO VIVO)</span>
+                    </div>
+
+                    <button id="video-stop-share-btn" class="btn-danger px-3 py-1 rounded-lg text-xs font-bold pointer-events-auto hidden">
+                        <i class="fa-solid fa-stop mr-1"></i> Encerrar Transmissão
+                    </button>
+                </div>
+
+                <!-- Video Element -->
+                <video id="screen-video" autoplay playsinline></video>
+
+                <!-- Floating Bottom Video Controls Overlay (Auto-hides on idle) -->
+                <div id="video-controls-overlay" class="absolute bottom-4 inset-x-4 sm:inset-x-8 max-w-xl mx-auto glass p-2.5 sm:p-3 rounded-2xl flex items-center justify-between gap-4 z-20 video-overlay-controls">
+                    
+                    <!-- Volume / Audio Control -->
+                    <div class="flex items-center gap-2.5 flex-1 max-w-[200px]">
+                        <button id="mute-toggle-btn" class="text-neon-green hover:text-white transition-colors p-1" title="Mutar / Desmutar">
+                            <i class="fa-solid fa-volume-high text-sm" id="volume-icon"></i>
+                        </button>
+                        <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="1" class="w-full h-1.5 bg-[#1c2b23] rounded-lg appearance-none cursor-pointer accent-[#7CFF3C]">
+                    </div>
+
+                    <!-- Screen Fullscreen Toggle -->
+                    <button id="video-fs-btn" class="glass px-3 py-1.5 rounded-xl text-xs font-bold text-gray-200 hover:text-white transition-all flex items-center gap-1.5" title="Tela Cheia (Duplo clique ou tecla F)">
+                        <i class="fa-solid fa-expand text-neon-green text-sm" id="video-fs-icon"></i>
+                        <span id="video-fs-text">Tela Cheia</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- RIGHT SIDEBAR: Tactical Radio / Chat Panel -->
+        <aside id="chat-sidebar" class="fixed md:static inset-y-0 right-0 w-72 sm:w-80 tactical-sidebar z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col flex-shrink-0 h-full shadow-2xl border-l border-[#1c2b23] hidden">
+            
+            <!-- Chat Header -->
+            <div class="p-3.5 border-b border-[#1c2b23] flex items-center justify-between">
+                <div class="flex items-center gap-2 text-white font-bold text-sm">
+                    <i class="fa-solid fa-tower-broadcast text-neon-green"></i>
+                    <span class="font-anton tracking-wider text-xs">RÁDIO & CHAT DA GUARNIÇÃO</span>
+                </div>
+                <button id="close-chat-btn" class="text-gray-400 hover:text-white p-1 transition-colors" title="Fechar Chat">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+
+            <!-- Messages List -->
+            <div id="chat-messages-list" class="flex-1 overflow-y-auto p-3 space-y-3 flex flex-col scroll-smooth">
+                <div class="text-center text-[10px] text-gray-500 my-2 font-mono">Frequência tática conectada. Início dos registros.</div>
+            </div>
+
+            <!-- Chat Input Form -->
+            <div class="p-3 border-t border-[#1c2b23] bg-black/50">
+                <form id="chat-form" class="flex gap-2">
+                    <input type="text" id="chat-input" autocomplete="off" placeholder="Transmitir mensagem..." class="flex-1 bg-black/70 border border-[#1c2b23] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#7CFF3C] transition-all">
+                    <button type="submit" class="bg-[#7CFF3C]/10 hover:bg-[#7CFF3C]/20 text-[#7CFF3C] border border-green-dim rounded-xl px-3 py-2 text-xs flex items-center justify-center transition-all">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Name Prompt Modal (When entering directly through URL link) -->
+    <div id="name-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="card p-8 rounded-2xl w-full max-w-md text-center">
+            <div class="brand-badge mx-auto mb-4" style="width: 58px; height: 58px;">
+                <img src="/images/bombeiros-logo.png" alt="Emblema Corpo de Bombeiros Norte">
+            </div>
+            <h2 class="font-anton text-2xl text-white tracking-wider mb-1">APRESENTAÇÃO AO POSTO</h2>
+            <p class="text-xs text-gray-300 mb-6 font-medium">Informe seu nome de combatente para assumir a guarnição.</p>
+            
+            <form id="name-form" class="w-full">
+                <input type="text" id="modal-name-input" placeholder="Seu nome de combatente..." required maxlength="24" class="text-center font-bold text-base mb-4">
+                <button type="submit" class="btn-primary w-full py-3 rounded-xl text-base font-bold flex justify-center items-center gap-2">
+                    <i class="fa-solid fa-arrow-right"></i> Assumir Posto
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Password Modal (When room is locked) -->
+    <div id="password-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="card p-8 rounded-2xl w-full max-w-md text-center">
+            <div class="w-14 h-14 mx-auto rounded-2xl bg-[#7CFF3C]/10 border border-green-dim flex items-center justify-center mb-4 text-neon-green">
+                <i class="fa-solid fa-lock text-2xl"></i>
+            </div>
+            <h2 class="font-anton text-2xl text-white tracking-wider mb-1">ACESSO RESTRITO</h2>
+            <p class="text-xs text-gray-300 mb-5 font-medium">Esta guarnição está operando com chave de acesso restrita.</p>
+            
+            <div class="w-full mb-4">
+                <input type="password" id="modal-password-input" placeholder="Digite a senha de acesso" class="text-center font-bold mb-2">
+                <p id="modal-error" class="text-xs text-red-400 hidden font-bold mt-1">
+                    <i class="fa-solid fa-triangle-exclamation mr-1"></i> Senha incorreta. Acesso negado.
+                </p>
+            </div>
+
+            <button id="modal-submit-btn" class="btn-primary w-full py-3 rounded-xl text-base font-bold flex justify-center items-center gap-2">
+                <i class="fa-solid fa-key"></i> Autenticar e Entrar
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>
