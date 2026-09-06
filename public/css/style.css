@@ -1,0 +1,407 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+:root {
+    --black: #06090a;
+    --black-2: #0a1210;
+    --panel: #0d1613;
+    --line: #1c2b23;
+    --green: #7CFF3C;
+    --green-dim: #3f7a24;
+    --green-deep: #12310f;
+    --white: #eef5ea;
+    --grey: #8fa093;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+::selection {
+    background: var(--green);
+    color: var(--black);
+}
+
+/* ---------- Background Atmosphere & Tactical Grain ---------- */
+.atmosphere {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 60% 50% at 8% 15%, rgba(124,255,60,0.16), transparent 60%),
+        radial-gradient(ellipse 55% 45% at 95% 80%, rgba(124,255,60,0.10), transparent 60%),
+        linear-gradient(180deg, #05080699 0%, var(--black) 70%);
+}
+
+.grain {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: .05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- Typography & Branding ---------- */
+.font-anton {
+    font-family: 'Anton', sans-serif;
+}
+
+.brand-badge {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1.5px solid var(--green-dim);
+    background: #05100a;
+    box-shadow: 0 0 12px rgba(124, 255, 60, 0.25);
+    flex-shrink: 0;
+}
+
+.brand-badge img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.brand-name {
+    font-family: 'Anton', sans-serif;
+    font-size: 19px;
+    letter-spacing: 1px;
+    color: var(--white);
+    line-height: 1;
+}
+
+.brand-name span {
+    color: var(--green);
+}
+
+.brand-sub {
+    font-size: 11px;
+    color: var(--grey);
+    letter-spacing: 2.5px;
+    margin-top: 3px;
+    font-weight: 600;
+}
+
+/* ---------- Header & Nav ---------- */
+.glass-nav {
+    background: rgba(6, 9, 10, 0.88);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.7), 0 0 15px rgba(124, 255, 60, 0.05);
+}
+
+.glass {
+    background: rgba(13, 22, 19, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--line);
+}
+
+.glass:hover {
+    border-color: var(--green-dim);
+    box-shadow: 0 0 12px rgba(124, 255, 60, 0.15);
+}
+
+/* ---------- Cards & Panels ---------- */
+.card, .glass-card {
+    background: linear-gradient(180deg, var(--panel), #081008);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 30px 60px -25px rgba(0,0,0,0.8), 0 0 0 1px rgba(124,255,60,0.03);
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before, .glass-card::before {
+    content: "";
+    position: absolute;
+    top: -40%;
+    right: -30%;
+    width: 260px;
+    height: 260px;
+    background: radial-gradient(circle, rgba(124,255,60,0.14), transparent 65%);
+    pointer-events: none;
+}
+
+/* ---------- Neon Accents ---------- */
+.text-neon-green {
+    color: var(--green);
+    text-shadow: 0 0 10px rgba(124, 255, 60, 0.5);
+}
+
+.border-neon-green {
+    border-color: var(--green);
+    box-shadow: 0 0 10px rgba(124, 255, 60, 0.25);
+}
+
+/* ---------- Buttons ---------- */
+.btn-primary {
+    background: linear-gradient(180deg, #9dff5c, var(--green));
+    color: #061505;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 12px 24px -8px rgba(124,255,60,0.45);
+    transition: transform .15s ease, box-shadow .2s ease;
+}
+
+.btn-primary:hover {
+    box-shadow: 0 16px 30px -8px rgba(124,255,60,0.65);
+    transform: translateY(-1px);
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-ghost {
+    background: rgba(124,255,60,0.03);
+    border: 1px solid var(--green-dim);
+    color: var(--green);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.btn-ghost:hover {
+    background: rgba(124,255,60,0.1);
+    border-color: var(--green);
+    box-shadow: 0 0 15px rgba(124, 255, 60, 0.2);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+    color: white;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border: none;
+    box-shadow: 0 0 15px rgba(225, 29, 72, 0.4);
+    transition: all .2s ease;
+}
+
+.btn-danger:hover {
+    box-shadow: 0 0 25px rgba(225, 29, 72, 0.7);
+    transform: translateY(-1px);
+}
+
+/* ---------- Switches & Toggles ---------- */
+.switch {
+    position: relative;
+    width: 42px;
+    height: 24px;
+    display: inline-block;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: var(--line);
+    border-radius: 999px;
+    transition: .2s;
+}
+
+.slider::before {
+    content: "";
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background: var(--white);
+    border-radius: 50%;
+    transition: .2s;
+}
+
+.switch input:checked + .slider {
+    background: var(--green-dim);
+}
+
+.switch input:checked + .slider::before {
+    transform: translateX(18px);
+    background: var(--green);
+}
+
+/* ---------- Inputs ---------- */
+input[type="text"], input[type="password"] {
+    width: 100%;
+    background: #05100a;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: var(--white);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    outline: none;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+input[type="text"]::placeholder, input[type="password"]::placeholder {
+    color: #52645a;
+    font-weight: 500;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(124,255,60,0.18);
+}
+
+/* ---------- Discord/Tactical Sidebar ---------- */
+.tactical-sidebar {
+    background: rgba(6, 12, 9, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid var(--line);
+}
+
+.tactical-user-item {
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.tactical-user-item:hover {
+    background: rgba(124, 255, 60, 0.04);
+    border-color: var(--green-dim);
+}
+
+.tactical-user-item.streaming {
+    background: rgba(124, 255, 60, 0.08);
+    border-color: rgba(124, 255, 60, 0.4);
+}
+
+/* ---------- Video Container & Fullscreen ---------- */
+#video-container {
+    width: 100%;
+    max-width: 1200px;
+    height: 100%;
+    max-height: 80vh;
+    margin: 0 auto;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 0 30px rgba(124, 255, 60, 0.18), 0 0 50px rgba(0, 0, 0, 0.85);
+    border: 1px solid var(--line);
+    position: relative;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#video-container:hover {
+    border-color: var(--green-dim);
+    box-shadow: 0 0 35px rgba(124, 255, 60, 0.28);
+}
+
+/* Fullscreen Mode (Native & CSS Fallback) */
+#video-container:fullscreen,
+#video-container:-webkit-full-screen,
+#video-container:-moz-full-screen,
+#video-container:-ms-fullscreen,
+#video-container.pseudo-fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    border: none !important;
+    background: #000 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 999999 !important;
+}
+
+#video-container:fullscreen video,
+#video-container:-webkit-full-screen video,
+#video-container:-moz-full-screen video,
+#video-container:-ms-fullscreen video,
+#video-container.pseudo-fullscreen video {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    object-fit: contain !important;
+}
+
+video {
+    width: 100%;
+    height: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    display: block;
+    background: #000;
+    cursor: pointer;
+}
+
+/* ---------- Video Controls Overlay ---------- */
+.video-overlay-controls {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.controls-hidden {
+    opacity: 0 !important;
+    pointer-events: none;
+    transform: translateY(10px);
+}
+
+/* ---------- Lobby Ready State ---------- */
+.lobby-card {
+    background: linear-gradient(180deg, var(--panel), #081008);
+    border: 1px dashed var(--green-dim);
+    border-radius: 16px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(124, 255, 60, 0.04);
+}
+
+/* ---------- Custom Scrollbar ---------- */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(6, 9, 10, 0.8);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--line);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--green-dim);
+}
+
+/* Utilities */
+.hidden {
+    display: none !important;
+}
