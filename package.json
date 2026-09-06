@@ -1,0 +1,24 @@
+{
+  "name": "bombeiros-norte-share",
+  "version": "1.0.0",
+  "description": "Corpo de Bombeiros Norte - Salvamento 35 | Compartilhamento de Tela e Comunicação Tática em Tempo Real",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "webrtc",
+    "socket.io",
+    "screen-share",
+    "bombeiros",
+    "cbm",
+    "realtime"
+  ],
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.2.1",
+    "socket.io": "^4.8.3",
+    "uuid": "^14.0.2"
+  }
+}
